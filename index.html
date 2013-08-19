@@ -17,51 +17,6 @@ canvas {
     <script src="lib/kinetic-v4.6.0.min.js"></script>
     <script src="lib/animations.js"></script>
     <script src="lib/bindings.js"></script>
-    
-    <script defer="defer">
-      var skelaton;
-      var stage = new Kinetic.Stage({
-        container: 'container',
-        width: 578,
-        height: 200
-      });
-      var layer = new Kinetic.Layer();
-      var imageObj = new Image();
-      imageObj.onload = function() {
-        skelaton = new Kinetic.Sprite({
-          x: 250,
-          y: 40,
-          image: imageObj,
-          animation: 'idle',
-          animations: animations,
-          frameRate: 7,
-          index: 0,
-          width: 64
-        });
-	
-        // add the shape to the layer
-        layer.add(skelaton);
-
-        // add the layer to the stage
-        stage.add(layer);
-
-        // start sprite animation
-        skelaton.start();
-      };
-      document.onkeydown = function(evt){
-        if(!keys[evt.keyCode] ){
-          keys[evt.keyCode] = true;
-          console.log(evt.keyCode);
-          if(bindingsDown[evt.keyCode])
-            bindingsDown[evt.keyCode]();
-        }
-      }
-      document.onkeyup = function(evt){
-        keys[evt.keyCode] = false;
-        if(bindingsUp[evt.keyCode])
-            bindingsUp[evt.keyCode]();
-      };
-      imageObj.src = 'res/player.png';
-    </script>
+    <script src="lib/main.js"defer="defer"></script>
   </body>
 </html>
