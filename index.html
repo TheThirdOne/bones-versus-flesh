@@ -19,41 +19,70 @@ canvas {
     </div>
     <script src="lib/kinetic-v4.6.0.min.js"></script>
     <script defer="defer">
+      var keys = [];
+      var bindings = [];
+      bindings[87] = function(){
+        skelaton.setAnimation('jump');
+
+        skelaton.afterFrame(2, function() {
+          skelaton.setAnimation('idle');
+        });
+      };
+      bindings[68] = function(){
+        skelaton.setAnimation('jump');
+        if(skelaton.getScaleX() > 0){
+          skelaton.setScaleX(-1);
+          skelaton.setX(skelaton.getX()+skelaton.getWidth()/2);
+        }
+        skelaton.afterFrame(2, function() {
+          skelaton.setAnimation('idle');
+        });
+      };
+      bindings[65] = function(){
+        skelaton.setAnimation('jump');
+        if(skelaton.getScaleX() < 0){
+          skelaton.setScaleX(1);
+          skelaton.setX(skelaton.getX()-skelaton.getWidth()/2);
+        }
+        skelaton.afterFrame(2, function() {
+          skelaton.setAnimation('idle');
+        });
+      };
+      var skelaton;
       var stage = new Kinetic.Stage({
         container: 'container',
         width: 578,
         height: 200
       });
       var layer = new Kinetic.Layer();
-      layer.getCanvas().getElement().setAttribute("webkitImageSmoothingEnabled","false");
       var animations = {
         idle: [{
-          x: 24,
-          y: 16,
-          width: 8,
-          height: 16
+          x: 96,
+          y: 64,
+          width: 32,
+          height: 64
         }],
         jump: [{
           x: 0,
-          y: 16,
-          width: 8,
-          height: 16
+          y: 64,
+          width: 32,
+          height: 64
         }, {
-          x: 8,
-          y: 16,
-          width: 8,
-          height: 16
+          x: 32,
+          y: 64,
+          width: 32,
+          height: 64
         }, {
-          x: 16,
-          y: 16,
-          width: 8,
-          height: 16
+          x: 64,
+          y: 64,
+          width: 32,
+          height: 64
         }]
       };
 
       var imageObj = new Image();
       imageObj.onload = function() {
-        var skelaton = new Kinetic.Sprite({
+        skelaton = new Kinetic.Sprite({
           x: 250,
           y: 40,
           image: imageObj,
@@ -61,7 +90,7 @@ canvas {
           animations: animations,
           frameRate: 7,
           index: 0,
-	  scale: 5
+          width: 64
         });
 	
         // add the shape to the layer
@@ -81,6 +110,17 @@ canvas {
             skelaton.setAnimation('idle');
           });
         }, false);
+      };
+      document.onkeydown = function(evt){
+        if(!keys[evt.keyCode] ){
+          keys[evt.keyCode] = true;
+          console.log(evt.keyCode);
+          if(bindings[evt.keyCode])
+            bindings[evt.keyCode]();
+        }
+      }
+      document.onkeyup = function(evt){
+        keys[evt.keyCode] = false;
       };
       imageObj.src = 'res/player.png';
     </script>
