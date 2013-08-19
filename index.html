@@ -14,40 +14,37 @@ canvas {
   </head>
   <body>
     <div id="container"></div>
-    <div id="buttons">
-      <input type="button" id="jump" value="Jump">
-    </div>
     <script src="lib/kinetic-v4.6.0.min.js"></script>
     <script defer="defer">
       var keys = [];
-      var bindings = [];
-      bindings[87] = function(){
+      var bindingsDown = [], bindingsUp = [];
+      bindingsDown[87] = function(){
         skelaton.setAnimation('jump');
 
         skelaton.afterFrame(2, function() {
           skelaton.setAnimation('idle');
         });
       };
-      bindings[68] = function(){
-        skelaton.setAnimation('jump');
-        if(skelaton.getScaleX() > 0){
-          skelaton.setScaleX(-1);
-          skelaton.setX(skelaton.getX()+skelaton.getWidth()/2);
-        }
-        skelaton.afterFrame(2, function() {
-          skelaton.setAnimation('idle');
-        });
-      };
-      bindings[65] = function(){
-        skelaton.setAnimation('jump');
+      bindingsDown[68] = function(){
+        skelaton.setAnimation('run');
         if(skelaton.getScaleX() < 0){
           skelaton.setScaleX(1);
           skelaton.setX(skelaton.getX()-skelaton.getWidth()/2);
         }
-        skelaton.afterFrame(2, function() {
-          skelaton.setAnimation('idle');
-        });
       };
+      bindingsUp[68] = function(){
+        skelaton.setAnimation('idle');
+      }
+      bindingsDown[65] = function(){
+        skelaton.setAnimation('run');
+        if(skelaton.getScaleX() > 0){
+          skelaton.setScaleX(-1);
+          skelaton.setX(skelaton.getX()+skelaton.getWidth()/2);
+        }
+      };
+      bindingsUp[65] = function(){
+        skelaton.setAnimation('idle');
+      }
       var skelaton;
       var stage = new Kinetic.Stage({
         container: 'container',
@@ -77,6 +74,27 @@ canvas {
           y: 64,
           width: 32,
           height: 64
+        }],
+        run: [{
+          x: 0,
+          y: 0,
+          width: 32,
+          height: 64
+        }, {
+          x: 32,
+          y: 0,
+          width: 32,
+          height: 64
+        }, {
+          x: 64,
+          y: 0,
+          width: 32,
+          height: 64
+        }, {
+          x: 96,
+          y: 0,
+          width: 32,
+          height: 64
         }]
       };
 
@@ -101,26 +119,19 @@ canvas {
 
         // start sprite animation
         skelaton.start();
-
-        // resume transition
-        document.getElementById('jump').addEventListener('click', function() {
-          skelaton.setAnimation('jump');
-
-          skelaton.afterFrame(2, function() {
-            skelaton.setAnimation('idle');
-          });
-        }, false);
       };
       document.onkeydown = function(evt){
         if(!keys[evt.keyCode] ){
           keys[evt.keyCode] = true;
           console.log(evt.keyCode);
-          if(bindings[evt.keyCode])
-            bindings[evt.keyCode]();
+          if(bindingsDown[evt.keyCode])
+            bindingsDown[evt.keyCode]();
         }
       }
       document.onkeyup = function(evt){
         keys[evt.keyCode] = false;
+        if(bindingsUp[evt.keyCode])
+            bindingsUp[evt.keyCode]();
       };
       imageObj.src = 'res/player.png';
     </script>
