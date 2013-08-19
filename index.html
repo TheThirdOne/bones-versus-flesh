@@ -1,0 +1,88 @@
+<html>
+  <head>
+	<style>
+canvas {
+    image-rendering: optimizeSpeed;             // Older versions of FF
+    image-rendering: -moz-crisp-edges;          // FF 6.0+
+    image-rendering: -webkit-optimize-contrast; // Webkit
+                                                //  (Safari now, Chrome soon)
+    image-rendering: -o-crisp-edges;            // OS X & Windows Opera (12.02+)
+    image-rendering: optimize-contrast;         // Possible future browsers.
+    -ms-interpolation-mode: nearest-neighbor;   // IE
+}
+	</style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <div id="buttons">
+      <input type="button" id="jump" value="Jump">
+    </div>
+    <script src="lib/kinetic-v4.6.0.min.js"></script>
+    <script defer="defer">
+      var stage = new Kinetic.Stage({
+        container: 'container',
+        width: 578,
+        height: 200
+      });
+      var layer = new Kinetic.Layer();
+      layer.getCanvas().getElement().setAttribute("webkitImageSmoothingEnabled","false");
+      var animations = {
+        idle: [{
+          x: 24,
+          y: 16,
+          width: 8,
+          height: 16
+        }],
+        jump: [{
+          x: 0,
+          y: 16,
+          width: 8,
+          height: 16
+        }, {
+          x: 8,
+          y: 16,
+          width: 8,
+          height: 16
+        }, {
+          x: 16,
+          y: 16,
+          width: 8,
+          height: 16
+        }]
+      };
+
+      var imageObj = new Image();
+      imageObj.onload = function() {
+        var skelaton = new Kinetic.Sprite({
+          x: 250,
+          y: 40,
+          image: imageObj,
+          animation: 'idle',
+          animations: animations,
+          frameRate: 7,
+          index: 0,
+	  scale: 5
+        });
+	
+        // add the shape to the layer
+        layer.add(skelaton);
+
+        // add the layer to the stage
+        stage.add(layer);
+
+        // start sprite animation
+        skelaton.start();
+
+        // resume transition
+        document.getElementById('jump').addEventListener('click', function() {
+          skelaton.setAnimation('jump');
+
+          skelaton.afterFrame(2, function() {
+            skelaton.setAnimation('idle');
+          });
+        }, false);
+      };
+      imageObj.src = 'res/player.png';
+    </script>
+  </body>
+</html>
